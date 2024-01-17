@@ -1,0 +1,21 @@
+body{
+    margin: 0;
+    background-color: gray;
+}
+main {
+    min-height: 100vh;
+    min-width: 100vw;
+    display: grid;
+    grid-template-columns: 1fr 500px 1fr;
+}
+
+#canvas-container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+#main-canvas{
+    width: 500px;
+    height: 500px;
+    background-color: black;
+}
