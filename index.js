@@ -14,22 +14,18 @@ let things = {
 }
 export {things}
 
-let player = new Entity(new ValuePair(10,10), 100, 100, new ValuePair(1,1))
+let player = new Entity(new ValuePair(10,10), 100, 100, new ValuePair(1))
 
 let enemy = new Entity(new ValuePair(200, 10), 50,50, new ValuePair(0,1))
 
 let counter = 0
 function play() {
     counter++
-    CanvasContext
-.clearRect(0,0,500,500)
-    CanvasContext
-.beginPath()
-    CanvasContext
-.fillStyle = 'red'
+    CanvasContext.clearRect(0,0,500,500)
+    CanvasContext.beginPath()
+    CanvasContext.fillStyle = 'red'
     
-    CanvasContext
-.stroke()
+    CanvasContext.stroke()
 
     for(let i=0; i<things.entities.length; i++) {
         let entity = things.entities[i]
@@ -39,7 +35,7 @@ function play() {
     }    
 
     if(counter % 200 == 0) {
-        player.velocity.multiply(-1)
+        player.velocity.multiply(-0.9)
         enemy.velocity.multiply(-1)
     }
 }
