@@ -1,4 +1,4 @@
-import { ValuePair } from "./valuePair.js"
+import { ValuePair } from "./ValuePair.js"
 
 // Contains pairs of common attribute names and their required types.
     // ex. Position is commonly used when drawing objects and its type must be a ValuePair. 

@@ -1,5 +1,5 @@
-import { Entity } from "./Types/entity.js"
-import { ValuePair } from "./Types/valuePair.js"
+import { Entity } from "./Types/Entity.js"
+import { ValuePair } from "./Types/ValuePair.js"
 
 const Canvas = document.querySelector('#main-canvas')
 Canvas.width = Canvas.clientWidth
@@ -14,7 +14,7 @@ let things = {
 }
 export {things}
 
-let player = new Entity(new ValuePair(10,10), 100, 100, new ValuePair(1))
+let player = new Entity(new ValuePair(10,10), 100, 100, new ValuePair(1.5))
 
 let enemy = new Entity(new ValuePair(200, 10), 50,50, new ValuePair(0,1))
 
@@ -38,4 +38,5 @@ function play() {
         player.velocity.multiply(-0.9)
         enemy.velocity.multiply(-1)
     }
+
 }
