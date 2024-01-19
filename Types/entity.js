@@ -1,6 +1,15 @@
 import { ValuePair } from "./ValuePair.js"
 import { things } from "../index.js"
 import { CanvasContext } from "../index.js"
+import { deepFreeze } from "../Helpers/deepFreeze.js"
+
+const EntityConstants = {
+    
+}
+deepFreeze(EntityConstants)
+export {EntityConstants}
+
+
 
 export class Entity {
     constructor(position, width, height, velocity) {
@@ -39,10 +48,31 @@ export class Entity {
         this._height = value
     } get height() {return this._height}
 
+    // The angle, in radians, that this entity will be rotated around its center when it is drawn.
+    // Use positive values for clockwise rotations; negaitve for counter-clockwise.
+    set rotation(value) {
+        if(typeof value !== 'number') throw new Error("Type Error. 'rotation' must be a number")
+        this._rotation = value
+    } get rotation() {return this._rotation ?? 0}
 
-    
+    // The angle, in radians, that this entity's rotation will be increased by every tick.
+    // A positive value will make the entity spin clockwise; negative for counter-clockwise.
+    set rotationSpeed(value) {
+        if(typeof value !== 'number') throw new Error("Type Error. 'rotationSpeeed' must be a number")
+        this._rotationSpeed = value
+    } get rotationSpeed() {return this._rotationSpeed ?? 0}
+
+
+
     draw() {
-        return CanvasContext.fillRect(this.position.x, this.position.y, this.width, this.height)
+        if(this.rotation !== 0) {
+            CanvasContext.translate((this.position.x)+(this.width/2), (this.position.y)+(this.height/2))
+            CanvasContext.rotate(this.rotation)
+            CanvasContext.translate(-((this.position.x)+(this.width/2)),-((this.position.y)+(this.height/2)))
+        }
+        
+        CanvasContext.fillRect(this.position.x, this.position.y, this.width, this.height)
+        CanvasContext.resetTransform();
     }
     
 }
