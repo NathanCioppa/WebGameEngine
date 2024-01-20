@@ -9,4 +9,4 @@ export function deepFreeze(object) {
     }
 
     return Object.freeze(object);
-  }
+}

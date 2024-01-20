@@ -1,6 +1,7 @@
 import { Entity } from "./Types/Entity.js"
 import { ValuePair } from "./Types/ValuePair.js"
-import { degreesToRadians, radiansToDegrees } from "./Helpers/MathHelper.js"
+import { degreesToRadians } from "./Helpers/MathHelper.js"
+import { Texture } from "./Types/Texture.js"
 
 const Canvas = document.querySelector('#main-canvas')
 Canvas.width = Canvas.clientWidth
@@ -13,22 +14,27 @@ let things = {
 }
 export {things}
 
-let player = new Entity(new ValuePair(100,100), 100, 100, new ValuePair())
-player.rotation = degreesToRadians(45)
+let texture = new Texture("../Images/TestTexture.png")
+let testTexture = new Texture("../Images/TestTexture.png")
 
+let player = new Entity(new ValuePair(10,10), texture, 100, 100, new ValuePair())
+player.fillColor = "green"
 
-let enemy = new Entity(new ValuePair(200, 10), 50,50, new ValuePair(0,1))
+let enemy = new Entity(new ValuePair(200, 10), texture, 50,50, new ValuePair(0,1))
 enemy.rotationSpeed = 0.1
+enemy.forceTextureFit = true
+enemy._fillColor="red"
+
+let test = new Entity(new ValuePair(20, 200), testTexture)
+test.fillColor = "magenta"
+
 
 let counter = 0
 let refreshInterval = setInterval(play, 16)
 function play() {
     counter++
     CanvasContext.clearRect(0,0,500,500)
-    CanvasContext.beginPath()
-    CanvasContext.fillStyle = 'red'
-    
-    CanvasContext.stroke()
+
 
     for(let i=0; i<things.entities.length; i++) {
         let entity = things.entities[i]
@@ -37,6 +43,7 @@ function play() {
         entity.rotation += entity.rotationSpeed
         entity.draw()
     }
+    
 
     if(counter % 200 == 0) {
         player.velocity.multiply(-0.9)
