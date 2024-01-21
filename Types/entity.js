@@ -17,18 +17,16 @@ export class Entity {
         // Sets 'this.property' instead of 'this._property' so that types are checked.
         this.position = position ?? new ValuePair().Zero()
         this.texture = texture
-        if(this._texture != null && width == null && height == null) {
-            width = this._texture.width ?? this._texture.textureImage.width
-            height = this._texture.height ?? this._texture.textureImage.height
-        }
-        this.width = width ?? 0
-        this.height = height ?? 0
+        this.width = width
+        this.height = height
         this.velocity = velocity ?? new ValuePair().Zero()
 
         this.index = things.entities.length
         
         things.entities.push(this)
     }
+
+
 
     // 'set' methods insure that the set value is of the correct type.
     // 'this._property' should only be explicitly set if type checking has alredy been completed.
@@ -39,6 +37,8 @@ export class Entity {
         this._position = value
     } get position() {return this._position}
 
+
+
     set texture(value) {
         if(value == null) {
             this._texture = value
@@ -48,7 +48,10 @@ export class Entity {
         this._texture = value
     } get texture() {return this._texture}
 
-    // If true, texture 'width', 'height', and 'useSrcSize' will be ignored, and the texture will be forced match the entity's 'width' and 'height'.
+
+
+    // If true, Texture 'width', 'height', and 'useSrcSize' will be ignored, and the Texture will be forced match the Entity's 'width' and 'height'.
+    // If true, and this Entity's 'width' or 'height' are null, the null dimension will return '0'
     _forceTextureFit = false
     set forceTextureFit(value) {
         if(typeof value !== 'boolean') throw new Error("Type Error. 'forceTextureFit' must be a boolean.")
@@ -60,36 +63,59 @@ export class Entity {
         this._velocity = value
     } get velocity() {return this._velocity}
 
+
+
+    // If no 'width' or 'height' is set (ie, they are null/undefined), the 'width' or 'height' 
+    // being used by the Texture will be used. If one of those values are null, the 'natural'
+    // value of that Texture's image will be used. These will also be used if the Texture's 
+    // 'useSrcSize' property is true. Otherwise, the set 'width' and 'height' values will be used.
+
+    // Note that if this Entity's 'forceTextureFit' property is 'true', then the above will be irrelivent,
+    // and the Texture will be drawn to fit over the Entity's 'width' and 'height'.
     set width(value) {
-        if(typeof value !== 'number') throw new Error("Type Error. 'width' must be a number.")
+        if(typeof value !== 'number' && value != null) throw new Error("Type Error. 'width' must be a number or null.")
         this._width = value
-    } get width() {return this._width}
+    } get width() {
+        return this._forceTextureFit
+        ? this._width ?? 0
+        : this._width ?? this.texture.textureImage.width
+    }
 
     set height(value) {
-        if(typeof value !== 'number') throw new Error("Type Error. 'height' must be a number.")
+        if(typeof value !== 'number' && value != null) throw new Error("Type Error. 'height' must be a number or null.")
         this._height = value
-    } get height() {return this._height}
+    } get height() {
+        return this._forceTextureFit
+        ? this._height ?? 0
+        : this._height ?? this.texture.textureImage.height
+    }
 
-    // The angle, in radians, that this entity will be rotated around its center when it is drawn.
+
+
+    // The angle, in radians, that this Entity will be rotated around its center when it is drawn.
     // Use positive values for clockwise rotations; negaitve for counter-clockwise.
     set rotation(value) {
         if(typeof value !== 'number') throw new Error("Type Error. 'rotation' must be a number.")
         this._rotation = value
     } get rotation() {return this._rotation ?? 0}
 
-    // The angle, in radians, that this entity's rotation will be increased by every tick.
-    // A positive value will make the entity spin clockwise; negative for counter-clockwise.
+    // The angle, in radians, that this Entity's rotation will be increased by every tick.
+    // A positive value will make the Entity spin clockwise; negative for counter-clockwise.
     set rotationSpeed(value) {
         if(typeof value !== 'number') throw new Error("Type Error. 'rotationSpeeed' must be a number.")
         this._rotationSpeed = value
     } get rotationSpeed() {return this._rotationSpeed ?? 0}
 
-    // The color to fill the space that this entity is taking up. This will display under the texture. 
+
+
+    // The color to fill the space that this Entity is taking up. This will display under the Texture. 
     // Any string that is not valid as a color will make the fill transparent.
     set fillColor(value) {
         if(typeof value !== 'string' && value != null) throw new Error("Type Error. 'fillColor' must be a string.")
         this._fillColor = value
     } get fillColor() {return this._fillColor}
+
+
 
     draw() {
         CanvasContext.beginPath()
@@ -101,7 +127,7 @@ export class Entity {
             CanvasContext.translate(-((this._position.x)+(this._width/2)),-((this._position.y)+(this._height/2)))
         }
         
-        CanvasContext.fillRect(this._position.x, this._position.y, this._width, this._height)
+        CanvasContext.fillRect(this._position.x, this._position.y, this.width, this.height)
 
         const texture = this.texture
 
@@ -117,12 +143,10 @@ export class Entity {
         else if (texture.useSrcSize) {
             CanvasContext.drawImage(texture.textureImage, this._position.x, this._position.y)
         } else {
-            console.log(texture.width)
             CanvasContext.drawImage(texture.textureImage, this._position.x, this._position.y, texture._width ?? texture._textureImage.width, texture._height ?? texture._textureImage.height)
         }
         
         CanvasContext.resetTransform()
         CanvasContext.stroke()
     }
-    
 }

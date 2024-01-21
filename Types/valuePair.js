@@ -15,6 +15,8 @@ export class ValuePair {
         this.y = y
     }
 
+    
+
     // 'set' methods insure that the set value is of the correct type.
     // 'this._x' and 'this._y' should only be explicitly set if type checking has alredy been completed. 
     // 'this._x' and 'this._y' should almost never be set outside this class. Set 'this.x' and 'this.y' instead. 

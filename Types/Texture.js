@@ -1,13 +1,11 @@
 export class Texture {
     constructor(imageSrc, width, height) {
         this.imageSrc = imageSrc
-        // By providing just a 'width', 'height' will be set equal to 'width'; shorthand for making a square Texture.
-        if(width != null && height == null) height = width
         this.width = width
         this.height = height
-        
-        this._useSrcSize = this.width == null && this.height == null
     }
+
+    
 
     set imageSrc(value) {
         if(typeof value !== 'string') throw new Error("Type Error. 'imageSrc' must be a string.")
@@ -20,25 +18,40 @@ export class Texture {
 
     } get imageSrc() {return this._imageSrc}
 
-    set textureImage(value) {
-        throw new Error("Do not set the 'textureImage' of a 'Texture'. This will be set by the 'Texture' class using the path provided by 'imageSrc'.")
+    set textureImage(valueNotRecommended) {
+        throw new Error("It is not recommended to set the 'textureImage' of a 'Texture'. This will be set by the 'Texture' class using the path provided by 'imageSrc'. If you would like to bypass this anyway, set the '_textureImage' property.")
     } get textureImage() {return this._textureImage}
 
+
+
+    // Getter value for 'width' and 'height' depend on whether useSrcSize is true,
+    // so accessing Texture.width will get the width that is actually being used. 
+    // Additionally, a null 'width' or 'height' will use the natural value instead.
+    // If you need to return the width value that has been explicitly set, get Texture._width directly. This may be null.
     set width(value) {
         if(typeof value !== 'number' && value != null) throw new Error("Type Error. 'width' must be a number, or null.")
         this._width = value
-    } get width() {return this._width}
+    } get width() {return this.useSrcSize 
+        ? this._textureImage.naturalWidth 
+        : this._width ?? this.textureImage.naturalWidth
+    }
 
+    // Same logic applies here as to 'width'
     set height(value) {
-        console.log("called")
         if(typeof value !== 'number' && value != null) throw new Error("Type Error. 'height' must be a number, or null.")
         this._height = value
-    } get height() {return this._height}
+    } get height() {
+        return this.useSrcSize 
+        ? this._textureImage.naturalHeight 
+        : this._width ?? this.textureImage.naturalHeight
+    }
 
     // Determines whether the width and height of the source image of this texture will be used,
-    // or if the set width and height values for this texture will be used, when the texture is rendered.
+    // or if the set width and height values for this texture will be used, when the texture is drawn.
     // This setting may become irrelivent depending on the settings of the entity that the texture is applied to.
-    // Additionally, its initialization depends on whether a width and height property are provided when a Texture is created.
+    // Setting both 'width' annd 'height' to null will use the natural dimensions anyway, but while this is 
+    // 'true', the natural dimesions will always be used no matter what the set 'width' and 'height' for this texture are.
+    _useSrcSize = false
     set useSrcSize(value) {
         if(typeof value !== 'boolean') throw new Error("Type Error. 'useSrcSize' must be a boolean.")
         this._useSrcSize = value

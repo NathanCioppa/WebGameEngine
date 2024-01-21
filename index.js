@@ -30,7 +30,7 @@ test.fillColor = "magenta"
 
 
 let counter = 0
-let refreshInterval = setInterval(play, 16)
+let refreshInterval= setInterval(play, 16)
 function play() {
     counter++
     CanvasContext.clearRect(0,0,500,500)
