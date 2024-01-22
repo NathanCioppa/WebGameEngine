@@ -2,6 +2,8 @@ import { Entity } from "./Types/Entity.js"
 import { ValuePair } from "./Types/ValuePair.js"
 import { degreesToRadians } from "./Helpers/MathHelper.js"
 import { Texture } from "./Types/Texture.js"
+import { AnimatedTexture } from "./Types/AnimatedTexture.js"
+
 
 const Canvas = document.querySelector('#main-canvas')
 Canvas.width = Canvas.clientWidth
@@ -28,8 +30,12 @@ enemy._fillColor="red"
 let test = new Entity(new ValuePair(20, 200), testTexture)
 test.fillColor = "magenta"
 
+let testAnimation = new AnimatedTexture('../Images/TestAnimatedTexture.png', 10, null, 50)
+let j = new Entity(new ValuePair(50, 400), testAnimation)
+j.fillColor = 'lime'
 
 let counter = 0
+
 let refreshInterval= setInterval(play, 16)
 function play() {
     counter++

@@ -12,11 +12,15 @@ export class Texture {
         
         const image = new Image()
         image.src = value
-        image.onload = () => { this._imageSrc = value }
+        image.onload = this.imageLoad(value)
         image.onerror = () => { throw new Error(`'${value}' is not a path to a valid image file.`) }
         this._textureImage = image
 
     } get imageSrc() {return this._imageSrc}
+
+    imageLoad(value) {
+        this._imageSrc = value
+    }
 
     set textureImage(valueNotRecommended) {
         throw new Error("It is not recommended to set the 'textureImage' of a 'Texture'. This will be set by the 'Texture' class using the path provided by 'imageSrc'. If you would like to bypass this anyway, set the '_textureImage' property.")
@@ -31,7 +35,8 @@ export class Texture {
     set width(value) {
         if(typeof value !== 'number' && value != null) throw new Error("Type Error. 'width' must be a number, or null.")
         this._width = value
-    } get width() {return this.useSrcSize 
+    } get width() {
+        return this.useSrcSize 
         ? this._textureImage.naturalWidth 
         : this._width ?? this.textureImage.naturalWidth
     }

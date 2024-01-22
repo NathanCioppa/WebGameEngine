@@ -3,6 +3,7 @@ import { things } from "../index.js"
 import { CanvasContext } from "../index.js"
 import { deepFreeze } from "../Helpers/deepFreeze.js"
 import { Texture } from "./Texture.js"
+import { AnimatedTexture } from "./AnimatedTexture.js"
 
 const EntityConstants = {
     
@@ -40,18 +41,14 @@ export class Entity {
 
 
     set texture(value) {
-        if(value == null) {
-            this._texture = value
-            return;
-        }
-        if(!(value instanceof Texture)) throw new Error("Type Error. 'texture' must be of type 'Texture'.")
+        if(!(value instanceof Texture) && value != null) throw new Error("Type Error. 'texture' must be of type 'Texture' or null.")
         this._texture = value
     } get texture() {return this._texture}
 
 
 
     // If true, Texture 'width', 'height', and 'useSrcSize' will be ignored, and the Texture will be forced match the Entity's 'width' and 'height'.
-    // If true, and this Entity's 'width' or 'height' are null, the null dimension will return '0'
+    // If true, and this Entity's 'width' or 'height' are null, each null dimension will return '0'.
     _forceTextureFit = false
     set forceTextureFit(value) {
         if(typeof value !== 'boolean') throw new Error("Type Error. 'forceTextureFit' must be a boolean.")
@@ -78,16 +75,21 @@ export class Entity {
     } get width() {
         return this._forceTextureFit
         ? this._width ?? 0
-        : this._width ?? this.texture.textureImage.width
+        : this._width ?? this.texture.width
     }
 
     set height(value) {
         if(typeof value !== 'number' && value != null) throw new Error("Type Error. 'height' must be a number or null.")
         this._height = value
     } get height() {
+        if(this.texture instanceof AnimatedTexture) {
+            return this._forceTextureFit
+            ? this._height ?? 0
+            : this._height ?? this.texture.height
+        }
         return this._forceTextureFit
         ? this._height ?? 0
-        : this._height ?? this.texture.textureImage.height
+        : this._height ?? this.texture.height
     }
 
 
@@ -116,15 +118,19 @@ export class Entity {
     } get fillColor() {return this._fillColor}
 
 
-
+    //TODO: make these into properties
+    frame = 0
+    animationDelay = 10
+    tick = 0
     draw() {
+        this.tick++
         CanvasContext.beginPath()
         CanvasContext.fillStyle = this._fillColor ?? 'transparent'
 
         if(this.rotation !== 0) {
-            CanvasContext.translate((this._position.x)+(this._width/2), (this._position.y)+(this._height/2))
+            CanvasContext.translate((this._position.x)+(this.width/2), (this._position.y)+(this.height/2))
             CanvasContext.rotate(this.rotation)
-            CanvasContext.translate(-((this._position.x)+(this._width/2)),-((this._position.y)+(this._height/2)))
+            CanvasContext.translate(-((this._position.x)+(this.width/2)),-((this._position.y)+(this.height/2)))
         }
         
         CanvasContext.fillRect(this._position.x, this._position.y, this.width, this.height)
@@ -135,6 +141,27 @@ export class Entity {
             CanvasContext.resetTransform()
             CanvasContext.stroke()
             return
+        }
+
+        if(texture instanceof AnimatedTexture) {
+            
+
+            if(this._forceTextureFit) {
+                CanvasContext.drawImage(texture.textureImage, 0, texture.frames[this.frame], texture.textureImage.naturalWidth, texture.frameHeight, this.position.x, this.position.y, this.width, this.height)
+            } else if (texture.useSrcSize) {
+                CanvasContext.drawImage(texture.textureImage, 0, texture.frames[this.frame], texture.textureImage.naturalWidth, texture.frameHeight, this.position.x, this.position.y, texture._textureImage.width, texture.frameHeight)
+            } else {
+                CanvasContext.drawImage(texture.textureImage, 0, texture.frames[this.frame], texture.textureImage.naturalWidth, texture.frameHeight, this.position.x, this.position.y, texture._width ?? texture._textureImage.width, texture._height ?? texture.frameHeight)
+            }
+            
+            CanvasContext.resetTransform()
+            CanvasContext.stroke()
+
+            //TODO: make these into properties
+            if(this.tick % this.animationDelay === 0)this.frame++
+            if(this.frame >= texture.frames.length) this.frame = 0
+            return
+
         }
 
         if(this._forceTextureFit) {
