@@ -6,22 +6,27 @@ export class Texture {
     }
 
     
-
+    // The path, as a string, to the image file of this texture. 
     set imageSrc(value) {
         if(typeof value !== 'string') throw new Error("Type Error. 'imageSrc' must be a string.")
         
         const image = new Image()
         image.src = value
-        image.onload = this.imageLoad(value)
+        image.onload = this._imageLoad(value)
         image.onerror = () => { throw new Error(`'${value}' is not a path to a valid image file.`) }
         this._textureImage = image
 
     } get imageSrc() {return this._imageSrc}
 
-    imageLoad(value) {
-        this._imageSrc = value
+    _imageLoad(path) {
+        this._imageSrc = path
     }
 
+    // The actual Image element of this texture. Created using the path provided by 'imageSrc'
+    // This Image takes time to load, and may not be immediately available when a Texture is created. 
+    // So, 'textureImage' data may not be available on the first few ticks of the Entity's 'draw()' function. 
+    // An Entity will get the values from its Texture on every tick of its 'draw()' function.
+    // Entity's can handle the case where their Texture is null, and will use the texture once it has loaded. 
     set textureImage(valueNotRecommended) {
         throw new Error("It is not recommended to set the 'textureImage' of a 'Texture'. This will be set by the 'Texture' class using the path provided by 'imageSrc'. If you would like to bypass this anyway, set the '_textureImage' property.")
     } get textureImage() {return this._textureImage}
@@ -53,9 +58,9 @@ export class Texture {
 
     // Determines whether the width and height of the source image of this texture will be used,
     // or if the set width and height values for this texture will be used, when the texture is drawn.
-    // This setting may become irrelivent depending on the settings of the entity that the texture is applied to.
-    // Setting both 'width' annd 'height' to null will use the natural dimensions anyway, but while this is 
-    // 'true', the natural dimesions will always be used no matter what the set 'width' and 'height' for this texture are.
+    // This setting may become irrelevant depending on the settings of the entity that the texture is applied to.
+    // Setting both 'width' and 'height' to null will use the natural dimensions anyway, but while this is 
+    // 'true', the natural dimensions will always be used no matter what the set 'width' and 'height' for this texture are.
     _useSrcSize = false
     set useSrcSize(value) {
         if(typeof value !== 'boolean') throw new Error("Type Error. 'useSrcSize' must be a boolean.")

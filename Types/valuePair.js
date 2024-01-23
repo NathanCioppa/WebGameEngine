@@ -3,14 +3,14 @@
 // If 'x' and 'y' are both null or undefined, they will be set to zero.
     // If 'x' is passed and 'y' is null or undefined, both 'x' and
     // 'y' will be set to the value of 'x'. 
-    // ex. new ValuePair(2) will create Valuepair(2,2), makes it easy
+    // ex. new ValuePair(2) will create ValuePair(2,2), makes it easy
     // to create a ValuePair of equal 'x' and 'y'
 export class ValuePair {
     constructor(x,y) {
         if(x == null && y == null) return this.Zero();
         if(y == null) y = x;
 
-        // Sets 'this.x' and 'this.y' insted of setting 'this._x' and 'this._y' so that types are checked by 'set' methods
+        // Sets 'this.x' and 'this.y' instead of setting 'this._x' and 'this._y' so that types are checked by 'set' methods
         this.x = x
         this.y = y
     }
@@ -18,7 +18,7 @@ export class ValuePair {
     
 
     // 'set' methods insure that the set value is of the correct type.
-    // 'this._x' and 'this._y' should only be explicitly set if type checking has alredy been completed. 
+    // 'this._x' and 'this._y' should only be explicitly set if type checking has already been completed. 
     // 'this._x' and 'this._y' should almost never be set outside this class. Set 'this.x' and 'this.y' instead. 
     
     set x(value) {

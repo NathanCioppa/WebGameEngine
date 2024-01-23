@@ -30,9 +30,12 @@ enemy._fillColor="red"
 let test = new Entity(new ValuePair(20, 200), testTexture)
 test.fillColor = "magenta"
 
-let testAnimation = new AnimatedTexture('../Images/TestAnimatedTexture.png', 10, null, 50)
+let testAnimation = new AnimatedTexture('../Images/TestAnimatedTexture.png', 10)
 let j = new Entity(new ValuePair(50, 400), testAnimation)
-j.fillColor = 'lime'
+//j.forceTextureFit = true
+//j.fillColor = 'lime'
+j.currentAnimationFrame = 1
+j.animationDelay = 20
 
 let counter = 0
 
@@ -47,7 +50,7 @@ function play() {
         entity.index = i
         entity.position.add(entity.velocity)
         entity.rotation += entity.rotationSpeed
-        entity.draw()
+        entity._draw()
     }
     
 

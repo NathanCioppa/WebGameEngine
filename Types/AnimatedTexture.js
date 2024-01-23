@@ -3,14 +3,14 @@ import { Texture } from "./Texture.js";
 // An 'AnimatedTexture' is a 'Texture' which will play an animation. 
 // An 'AnimatedTexture' is applied to an 'Entity' the same way a 'Texture' is. 
 // To create an animation, all frames of the animation must be on one image file, 
-// with each frame being seperated by 2 pixles of empty space, vertically. All frames 
+// with each frame being separated by 2 pixels of empty space, vertically. All frames 
 // should be the same height. Take note of that height, and set is as 'frameHeight' when 
 // creating a new instance of the 'AnimatedTexture' class.
 export class AnimatedTexture extends Texture {
-    constructor(animationFramesSrc, frameheight, width, height) {
+    constructor(animationFramesSrc, frameHeight, width, height) {
         super(animationFramesSrc, width)
         this.height = height
-        this.frameHeight = frameheight
+        this.frameHeight = frameHeight
 
         this.textureImage.onload = () => { 
             this._frames = this.setAnimationFrames()
@@ -18,15 +18,17 @@ export class AnimatedTexture extends Texture {
         }
     }
 
+
+
     // An array, who's length is the number of frames that this animation has. The animation's
     // frames are numbered from 0; meaning that to access the Y position that is being read from 
     // on a given frame, you can access 'frames[<frameNumber>]'.
-        // ie. frames[0] gives the y coordiante being read from at the first frame; which should always be 0.
+        // ie. frames[0] gives the y coordinate being read from at the first frame; which should always be 0.
         // frames[1] gives the Y of the second frame, which should be 'this.frameHeight'+2.
 
     // 'this._frames' is frozen once the 'this.textureImage' (being the image with all frames of the animation) is loaded, and 'this.._frames' is initialized. 
     set frames(valueNotRecommended) {
-        throw new Error("It is not reccomended to set an AnimatedTexture's 'frames'. This is be set by the 'AnimatedTexture' class based on the image that is set by 'animationFramesSrc' when instance is created. If you would like to bypass this anyway, set the '_frames' property.")
+        throw new Error("It is not recommended to set an AnimatedTexture's 'frames'. This is be set by the 'AnimatedTexture' class based on the image that is set by 'animationFramesSrc' when instance is created. If you would like to bypass this anyway, set the '_frames' property.")
     } get frames() { return this._frames }
 
     set frameHeight(value) {
@@ -50,6 +52,8 @@ export class AnimatedTexture extends Texture {
         : this._height ?? this.frameHeight
     }
 
+
+    
     setAnimationFrames() {
         const NumberOfFrames = this.textureImage.naturalHeight / (this.frameHeight+2)
         let animationFrames = []
