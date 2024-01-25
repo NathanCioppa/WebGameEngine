@@ -1,6 +1,6 @@
 import { ValuePair } from "./ValuePair.js"
-import { things } from "../index.js"
-import { CanvasContext } from "../index.js"
+import { things } from "../WebGameEngine/engine.js"
+import { CanvasContext } from "../WebGameEngine/engine.js"
 import { Texture } from "./Texture.js"
 import { AnimatedTexture } from "./AnimatedTexture.js"
 
@@ -17,7 +17,6 @@ export class Entity {
         this._animationDelay = 0
 
         this.index = things.entities.length
-        
         things.entities.push(this)
     }
 
@@ -47,6 +46,12 @@ export class Entity {
         this._forceTextureFit = value
     } get forceTextureFit() {return this._forceTextureFit}
 
+    // The x and y value that the Texture will be offset from the top left corner of the Entity when it is drawn.
+    set textureOffset(value) {
+        if(!(value instanceof ValuePair) && value != null) throw new Error("Type Error. 'texture' must be of type 'ValuePair' or null.")
+        this._textureOffset = value ?? new ValuePair().Zero()
+    } get textureOffset() { return this._textureOffset ?? (this._textureOffset = new ValuePair().Zero())}
+
 
 
     // If no 'width' or 'height' is set (ie, they are null/undefined), the 'width' or 'height' 
@@ -67,7 +72,7 @@ export class Entity {
 
     // A different height value must be defaulted to if the Entity's height is null, and its texture
     // is an AnimationTexture. This is because getting an AnimationTexture's 'naturalHeight' will 
-    // return the height of the entire animation sheet, when we actually just need the height of its frames.  
+    // return the height of the entire animation sheet, when we actually just need the height of its frames.
     set height(value) {
         if(typeof value !== 'number' && value != null) throw new Error("Type Error. 'height' must be a number or null.")
         this._height = value
@@ -138,6 +143,7 @@ export class Entity {
 
 
 
+    // Tracks how many times this Entity's 'draw()' function has run. It is incremented at the end of each function call.
     set drawTick(valueNotRecommended) {
         throw new Error("It is not recommended to set the value of 'drawTick'. This is incremented by the Entity's 'draw()' function to keep track of how many times the Entity's draw loop has completely run. If you would like to bypass this anyway, set '_drawTick'.")
     } get drawTick() { return this._drawTick }
@@ -163,11 +169,11 @@ export class Entity {
         if(texture instanceof AnimatedTexture) {
             
             if(this._forceTextureFit) {
-                CanvasContext.drawImage(texture.textureImage, 0, texture.frames[this.currentAnimationFrame], texture.textureImage.naturalWidth, texture.frameHeight, this.position.x, this.position.y, this.width, this.height)
+                CanvasContext.drawImage(texture.textureImage, 0, texture.frames[this.currentAnimationFrame], texture.textureImage.naturalWidth, texture.frameHeight, this.position.x + this.textureOffset.x, this.position.y + this.textureOffset.y, this.width, this.height)
             } else if (texture.useSrcSize) {
-                CanvasContext.drawImage(texture.textureImage, 0, texture.frames[this.currentAnimationFrame], texture.textureImage.naturalWidth, texture.frameHeight, this.position.x, this.position.y, texture._textureImage.width, texture.frameHeight)
+                CanvasContext.drawImage(texture.textureImage, 0, texture.frames[this.currentAnimationFrame], texture.textureImage.naturalWidth, texture.frameHeight, this.position.x + this.textureOffset.x, this.position.y + this.textureOffset.y, texture._textureImage.width, texture.frameHeight)
             } else {
-                CanvasContext.drawImage(texture.textureImage, 0, texture.frames[this.currentAnimationFrame], texture.textureImage.naturalWidth, texture.frameHeight, this.position.x, this.position.y, texture._width ?? texture._textureImage.width, texture._height ?? texture.frameHeight)
+                CanvasContext.drawImage(texture.textureImage, 0, texture.frames[this.currentAnimationFrame], texture.textureImage.naturalWidth, texture.frameHeight, this.position.x + this.textureOffset.x, this.position.y + this.textureOffset.y, texture._width ?? texture._textureImage.width, texture._height ?? texture.frameHeight)
             }
 
             this.currentAnimationFrame = this._drawTick % this.animationDelay === 0 
@@ -179,12 +185,12 @@ export class Entity {
         }
 
         if(this._forceTextureFit) {
-            CanvasContext.drawImage(texture.textureImage, this._position.x, this._position.y, this._width, this._height)
+            CanvasContext.drawImage(texture.textureImage, this.position.x + this.textureOffset.x, this.position.y + this.textureOffset.y, this._width, this._height)
         } 
         else if (texture.useSrcSize) {
-            CanvasContext.drawImage(texture.textureImage, this._position.x, this._position.y)
+            CanvasContext.drawImage(texture.textureImage, this.position.x + this.textureOffset.x, this.position.y + this.textureOffset.y)
         } else {
-            CanvasContext.drawImage(texture.textureImage, this._position.x, this._position.y, texture._width ?? texture._textureImage.width, texture._height ?? texture._textureImage.height)
+            CanvasContext.drawImage(texture.textureImage, this.position.x + this.textureOffset.x, this.position.y + this.textureOffset.y, texture._width ?? texture._textureImage.width, texture._height ?? texture._textureImage.height)
         }
         
         this._endDraw()
