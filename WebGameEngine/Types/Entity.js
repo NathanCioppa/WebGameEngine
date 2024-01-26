@@ -1,6 +1,6 @@
 import { ValuePair } from "./ValuePair.js"
-import { things } from "../WebGameEngine/engine.js"
-import { CanvasContext } from "../WebGameEngine/engine.js"
+import { things } from "../engine.js"
+import { CanvasContext } from "../engine.js"
 import { Texture } from "./Texture.js"
 import { AnimatedTexture } from "./AnimatedTexture.js"
 
@@ -142,7 +142,7 @@ export class Entity {
     } get animationDelay() { return this._animationDelay }
 
 
-    isDead = false
+    _isDead = false
     set isDead(value) {
         if(typeof value !== 'boolean') throw new Error("Type Error. 'isDead' must be a boolean.")
         this._isDead = value
@@ -189,7 +189,6 @@ export class Entity {
             : this.currentAnimationFrame
 
             return this._endDraw()
-
         }
 
         if(this._forceTextureFit) {
@@ -212,7 +211,21 @@ export class Entity {
         this._drawTick++
     }
 
+    // Called in engine.js whenever this Entity collides with another. 'entity' is the Entity that this Entity collided with.
+    // Add this function to extensions of the Entity class to define what should happen when it collides with an entity.
     onEntityCollide(entity) {}
 
+    // Called on every tick of this Entity's '_draw()' function before this Entity is drawn.
+    // Add this function to extensions of the Entity class to define behaviors of this Entity. 
     ai() {}
+
+    // Called when this Entity "dies" / should be removed from the 'things.entities' array.
+    // After this Entity's '_isDead' is set to true, its 'onKill()' function is run.
+    // Add the 'onKill()' function to extensions of the Entity class to make things
+    // happen when the Entity is "killed".  
+    kill() {
+        this._isDead = true
+        this.onKill()
+    }
+    onKill() {}
 }

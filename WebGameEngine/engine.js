@@ -36,7 +36,7 @@ function prePlay() {
       if(entity.index === checkEntity.index) return
       let entitiesColliding = (entity.position.x + entity.width >= checkEntity.position.x && entity.position.x <= checkEntity.position.x + checkEntity.width) && (entity.position.y + entity.height >= checkEntity.position.y && entity.position.y <= checkEntity.position.y + checkEntity.height)
       
-      if(entitiesColliding) entity.onEntityCollide(checkEntity)
+      if(entitiesColliding) {entity.onEntityCollide(checkEntity)}
     })
   }
 }

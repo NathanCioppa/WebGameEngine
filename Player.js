@@ -1,4 +1,4 @@
-import { Entity } from "./Types/Entity.js"
+import { Entity } from "./WebGameEngine/Types/Entity.js"
 
 export class Player extends Entity {
     constructor(position, texture) {
@@ -8,10 +8,9 @@ export class Player extends Entity {
         this.height = 50
         this.fillColor = 'orange'
         this.forceTextureFit = true
-        console.log("2")
     }
 
-    
+
 
     hasStopped = false
     ai() {
@@ -22,8 +21,7 @@ export class Player extends Entity {
 
     }
 
-    onEntityCollide(entity) {
-        entity.isDead = true
+    onKill() {
+        console.log("Killed Player")
     }
-    
 }
