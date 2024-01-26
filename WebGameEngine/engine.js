@@ -7,10 +7,9 @@ export {CanvasContext}
 
 
 
-let things = {
-    entities: []
+export let things = {
+  entities: []
 }
-export {things}
 
 
 
@@ -26,24 +25,38 @@ function enginePlay() {
 
 // Any actions to take before 'play()' is run.
 function prePlay() {
-    CanvasContext.clearRect(0,0,500,500)
-    counter++
-    
+  CanvasContext.clearRect(0,0,500,500)
+  counter++
+  
+  // Checks for collisions between entities, then calls the Entity's 'onEntityCollide()' function if there is a collision.
+  for(let i=0; i<things.entities.length; i++) {
+    const entity = things.entities[i]
 
-    for(let i=0; i<things.entities.length; i++) {
-        let entity = things.entities[i]
-        entity.index = i
-        entity.position.add(entity.velocity)
-        entity.rotation += entity.rotationSpeed
-        entity._draw()
-    }
-    
-    
+    things.entities.map(checkEntity => {
+      if(entity.index === checkEntity.index) return
+      let entitiesColliding = (entity.position.x + entity.width >= checkEntity.position.x && entity.position.x <= checkEntity.position.x + checkEntity.width) && (entity.position.y + entity.height >= checkEntity.position.y && entity.position.y <= checkEntity.position.y + checkEntity.height)
+      
+      if(entitiesColliding) entity.onEntityCollide(checkEntity)
+    })
+  }
 }
 
 // Any action to take after 'play()' is run.
 function postPlay() {
+  for(let i=0; i<things.entities.length; i++) {
+    const entity = things.entities[i]
 
+    if(entity.isDead){
+      things.entities.splice(i,1)
+      i--
+      continue
+    }
+
+    entity.index = i
+    entity.position.add(entity.velocity)
+    entity.rotation += entity.rotationSpeed
+    entity._draw()
+  }
 }
 
 
@@ -53,7 +66,7 @@ let play = () => {}
 import("../index.js")
 .then((module) => {
   play = () => module.play()
-  refreshInterval= setInterval(enginePlay, 16)
+  refreshInterval = setInterval(enginePlay, 16)
 })
 .catch((error) => {
   console.error("Error importing index.js:", error);

@@ -14,7 +14,7 @@ export class Entity {
         this.velocity = velocity ?? new ValuePair().Zero()
 
         this._currentAnimationFrame = 0
-        this._animationDelay = 0
+        this._animationDelay = 0        
 
         this.index = things.entities.length
         things.entities.push(this)
@@ -142,6 +142,13 @@ export class Entity {
     } get animationDelay() { return this._animationDelay }
 
 
+    isDead = false
+    set isDead(value) {
+        if(typeof value !== 'boolean') throw new Error("Type Error. 'isDead' must be a boolean.")
+        this._isDead = value
+    } get isDead() {return this._isDead}
+
+
 
     // Tracks how many times this Entity's 'draw()' function has run. It is incremented at the end of each function call.
     set drawTick(valueNotRecommended) {
@@ -151,6 +158,7 @@ export class Entity {
 
     _drawTick = 0
     _draw() {
+        this.ai()
         CanvasContext.beginPath()
         CanvasContext.fillStyle = this._fillColor ?? 'transparent'
 
@@ -203,4 +211,8 @@ export class Entity {
         CanvasContext.stroke()
         this._drawTick++
     }
+
+    onEntityCollide(entity) {}
+
+    ai() {}
 }

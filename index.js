@@ -3,6 +3,7 @@ import { ValuePair } from "./Types/ValuePair.js"
 import { Texture } from "./Types/Texture.js"
 import { AnimatedTexture } from "./Types/AnimatedTexture.js"
 import { counter } from "./WebGameEngine/engine.js"
+import { Player } from "./Player.js"
 
 
 
@@ -24,6 +25,8 @@ let testAnimation = new AnimatedTexture('../Images/TestAnimatedTexture.png', 10)
 let j = new Entity(new ValuePair(50, 400), testAnimation)
 j.currentAnimationFrame = 1
 j.animationDelay = 20
+
+let p = new Player(new ValuePair(300, 300), texture)
 
 
 
