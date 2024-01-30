@@ -73,4 +73,6 @@ export class ValuePair {
         }
         throw new Error("Type error. Can only multiply by a number or a ValuePair via ValuePair.multiply(n)")
     }
+
+    Clone() { return new ValuePair(this._x, this._y) }
 }

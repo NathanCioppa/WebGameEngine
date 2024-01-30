@@ -4,17 +4,21 @@ import { CanvasContext } from "../engine.js"
 import { Texture } from "./Texture.js"
 import { AnimatedTexture } from "./AnimatedTexture.js"
 
+// Entity is a class that represents just about anything that is drawn to the canvas. 
+// It is designed so that things drawn onto the canvas can be extensions of this class,
+// thus giving just about everything on the canvas at least some identical attributes
+// so that it is easy to define behaviors and allow things to interact with each-other. 
 export class Entity {
-    constructor(position, texture, width, height, velocity) {
+    constructor(position, texture, width, height) {
         // Sets 'this.property' instead of 'this._property' so that types are checked.
         this.position = position ?? new ValuePair().Zero()
         this.texture = texture
         this.width = width
         this.height = height
-        this.velocity = velocity ?? new ValuePair().Zero()
+        this.velocity = new ValuePair().Zero()
 
         this._currentAnimationFrame = 0
-        this._animationDelay = 0        
+        this._animationDelay = 0
 
         this.index = things.entities.length
         things.entities.push(this)
@@ -28,11 +32,12 @@ export class Entity {
 
     set position(value) {
         if(!(value instanceof ValuePair)) throw new Error("Type Error. 'position' must be of type 'ValuePair'.")
-        this._position = value ?? new ValuePair().Zero()
+        this._position = value == null ? new ValuePair().Zero() : value.Clone()
     } get position() {return this._position}
 
 
 
+    // The Texture / image that will be drawn over this Entity.
     set texture(value) {
         if(!(value instanceof Texture) && value != null) throw new Error("Type Error. 'texture' must be of type 'Texture' or null.")
         this._texture = value
@@ -49,7 +54,7 @@ export class Entity {
     // The x and y value that the Texture will be offset from the top left corner of the Entity when it is drawn.
     set textureOffset(value) {
         if(!(value instanceof ValuePair) && value != null) throw new Error("Type Error. 'texture' must be of type 'ValuePair' or null.")
-        this._textureOffset = value ?? new ValuePair().Zero()
+        this._textureOffset = value == null ? new ValuePair().Zero() : value.Clone()
     } get textureOffset() { return this._textureOffset ?? (this._textureOffset = new ValuePair().Zero())}
 
 
@@ -94,7 +99,7 @@ export class Entity {
     // ie. the Entity's X position will be incremented by 'velocity.x'; Y by 'velocity.y'
     set velocity(value) {
         if(!(value instanceof ValuePair)) throw new Error("Type Error. 'velocity' must be of type 'ValuePair'.")
-        this._velocity = value ?? new ValuePair().Zero()
+        this._velocity = value == null ? new ValuePair().Zero() : value.Clone()
     } get velocity() {return this._velocity}
 
 
@@ -142,6 +147,9 @@ export class Entity {
     } get animationDelay() { return this._animationDelay }
 
 
+
+    // If 'isDead' is 'true', then this Entity will be removed from 'things.entities' on the
+    // next call of the 'postPlay()' function inside of 'engine.js'.
     _isDead = false
     set isDead(value) {
         if(typeof value !== 'boolean') throw new Error("Type Error. 'isDead' must be a boolean.")
@@ -150,7 +158,7 @@ export class Entity {
 
 
 
-    // Tracks how many times this Entity's 'draw()' function has run. It is incremented at the end of each function call.
+    // Tracks how many times this Entity's '_draw()' function has run. It is incremented at the end of each function call.
     set drawTick(valueNotRecommended) {
         throw new Error("It is not recommended to set the value of 'drawTick'. This is incremented by the Entity's 'draw()' function to keep track of how many times the Entity's draw loop has completely run. If you would like to bypass this anyway, set '_drawTick'.")
     } get drawTick() { return this._drawTick }
@@ -212,7 +220,7 @@ export class Entity {
     }
 
     // Called in engine.js whenever this Entity collides with another. 'entity' is the Entity that this Entity collided with.
-    // Add this function to extensions of the Entity class to define what should happen when it collides with an entity.
+    // Add this function to extensions of the Entity class to define what should happen when it collides with an Entity.
     onEntityCollide(entity) {}
 
     // Called on every tick of this Entity's '_draw()' function before this Entity is drawn.
@@ -222,7 +230,7 @@ export class Entity {
     // Called when this Entity "dies" / should be removed from the 'things.entities' array.
     // After this Entity's '_isDead' is set to true, its 'onKill()' function is run.
     // Add the 'onKill()' function to extensions of the Entity class to make things
-    // happen when the Entity is "killed".  
+    // happen when the Entity is "killed".
     kill() {
         this._isDead = true
         this.onKill()

@@ -1,5 +1,6 @@
 import { Entity } from "./WebGameEngine/Types/Entity.js"
 
+
 export class Player extends Entity {
     constructor(position, texture) {
         super(position, texture)
@@ -15,9 +16,7 @@ export class Player extends Entity {
     hasStopped = false
     ai() {
         
-        if(this.velocity.x > -5 && !this.hasStopped)
-        this.velocity.add(-0.25)
-        else {this.velocity.Zero(); this.hasStopped = true}
+        
 
     }
 

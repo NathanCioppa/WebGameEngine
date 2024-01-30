@@ -12,7 +12,6 @@ export let things = {
 }
 
 
-
 let refreshInterval
 export let counter = 0
 
@@ -46,6 +45,7 @@ function postPlay() {
   for(let i=0; i<things.entities.length; i++) {
     const entity = things.entities[i]
 
+    // Removes dead entities from the 'things.entities' array, and adjusts 'i' so that the rest of the entities are indexed correctly.
     if(entity.isDead){
       things.entities.splice(i,1)
       i--

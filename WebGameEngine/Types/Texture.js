@@ -1,3 +1,14 @@
+
+// Texture class is designed to make it easier to draw images onto things (for
+// example an Entity) that are drawn to the canvas. 
+// Creating a texture requires specifying the path to its source image within the 
+// project, or an image's web address.
+// 'width' and 'height' can be set to give custom dimensions to each instance of 
+// the texture by default. If either 'width' or 'height' are null, then the 
+// image's intrinsic size will be used for the null dimension. 
+    // Note that dimensions set here may be overridden by whatever the Texture is 
+    // applied to. For example, an Entity can set 'forceTextureFit' to ignore the
+    // Texture's set and default dimensions, and instead size it to cover the Entity. 
 export class Texture {
     constructor(imageSrc, width, height) {
         this.imageSrc = imageSrc
