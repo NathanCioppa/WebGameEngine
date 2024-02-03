@@ -1,6 +1,6 @@
 import { Projectile } from "./Types/Projectile.js"
 
-const Canvas = document.querySelector('#main-canvas')
+export const Canvas = document.querySelector('#main-canvas')
 Canvas.width = Canvas.clientWidth
 Canvas.height = Canvas.clientHeight
 const CanvasContext = Canvas.getContext('2d')
@@ -52,7 +52,7 @@ function postPlay() {
     const entity = things.entities[i]
 
     // Removes dead entities from the 'things.entities' array, and adjusts 'i' so that the rest of the entities are indexed correctly.
-    if(entity.isDead){
+    if(entity.isDead) {
       things.entities.splice(i,1)
       i--
       continue

@@ -1,37 +1,20 @@
-import { Entity } from "./WebGameEngine/Types/Entity.js"
-import { ValuePair } from "./WebGameEngine/Types/ValuePair.js"
-import { Texture } from "./WebGameEngine/Types/Texture.js"
-import { AnimatedTexture } from "./WebGameEngine/Types/AnimatedTexture.js"
-import { counter } from "./WebGameEngine/engine.js"
-import { Player } from "./Player.js"
-import { Enemy } from "./Enemy.js"
-import { Projectile } from "./WebGameEngine/Types/Projectile.js"
-import { TestProjectile } from "./TestProj.js"
+import { ExampleEntity } from "./Entities/ExampleEntity.js";
+import { ValuePair } from "./WebGameEngine/Types/ValuePair.js";
+import { Canvas } from "./WebGameEngine/engine.js";
 
+// Create a new instance of an Entity.
+// ExampleEntity is an extension of the Entity class.
+// Its constructor takes just the 'position' property. Everything else is set in the ExampleEntity class. 
+let example = new ExampleEntity(
+    new ValuePair((Canvas.width/2), Canvas.height/2) // 'position' is a ValuePair, which stores the x and y positions in one object. 
+)
 
-
-
-let texture = new Texture("../Images/TestTexture.png")
-
-let enemy = new Enemy(new ValuePair(300,0), texture)
-
-let testAnimation = new AnimatedTexture('../Images/TestAnimatedTexture.png', 10)
-let j = new Entity(new ValuePair(50, 400), testAnimation)
-j.currentAnimationFrame = 1
-j.animationDelay = 20
-
-let p = new Player(new ValuePair(300, 300), texture)
-
-let testProjectile  = new TestProjectile(null, new ValuePair(100, 0), null, 50, 50, new ValuePair(1,0), 10000)
-testProjectile.fillColor = "green"
-testProjectile.infinitePenetration = true
+// Adjust the position of 'example' so it is drawn exactly in the center, now that its width and height have been set. 
+// There are more ways to do this, but this gives an example of how 'add()' can be used on ValuePairs. 
+example.position.add(new ValuePair(-example.width/2, -example.height/2))
 
 
 
 export function play() {
-
-    if(counter % 250 == 0) {
-        enemy.velocity.multiply(-1)
-    }
 
 }
