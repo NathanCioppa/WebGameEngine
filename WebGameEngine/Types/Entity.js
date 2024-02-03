@@ -148,13 +148,31 @@ export class Entity {
 
 
 
+    // If true, this Entity will call it's 'onEntityCollide()' function on projectiles that it hits.
+    _canHitProjectiles = false
+    set canHitProjectiles(value) {
+        if (typeof value !== 'boolean') throw new Error("Type Error. 'canHitProjectile' must be a boolean")
+        this._canHitProjectiles = value
+    } get canHitProjectiles() { return this._canHitProjectiles }
+
+
+
+    // If true, this Entity will call it's 'onEntityCollide()' function on projectiles that it owns. 
+    _canHitOwnedProjectiles = false
+    set canHitOwnedProjectiles(value) {
+        if(typeof value !== 'boolean') throw new Error("Type Error. 'canHitOwnedProjecties' must be a boolean")
+        this._canHitOwnedProjectiles = value
+    } get canHitOwnedProjectiles() { return this._canHitOwnedProjectiles }
+
+
+
     // If 'isDead' is 'true', then this Entity will be removed from 'things.entities' on the
     // next call of the 'postPlay()' function inside of 'engine.js'.
     _isDead = false
     set isDead(value) {
         if(typeof value !== 'boolean') throw new Error("Type Error. 'isDead' must be a boolean.")
         this._isDead = value
-    } get isDead() {return this._isDead}
+    } get isDead() { return this._isDead }
 
 
 
@@ -222,6 +240,7 @@ export class Entity {
     // Called in engine.js whenever this Entity collides with another. 'entity' is the Entity that this Entity collided with.
     // Add this function to extensions of the Entity class to define what should happen when it collides with an Entity.
     onEntityCollide(entity) {}
+
 
     // Called on every tick of this Entity's '_draw()' function before this Entity is drawn.
     // Add this function to extensions of the Entity class to define behaviors of this Entity. 

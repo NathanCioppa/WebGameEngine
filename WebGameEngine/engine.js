@@ -1,3 +1,4 @@
+import { Projectile } from "./Types/Projectile.js"
 
 const Canvas = document.querySelector('#main-canvas')
 Canvas.width = Canvas.clientWidth
@@ -34,8 +35,13 @@ function prePlay() {
     things.entities.map(checkEntity => {
       if(entity.index === checkEntity.index) return
       let entitiesColliding = (entity.position.x + entity.width >= checkEntity.position.x && entity.position.x <= checkEntity.position.x + checkEntity.width) && (entity.position.y + entity.height >= checkEntity.position.y && entity.position.y <= checkEntity.position.y + checkEntity.height)
+      if(!entitiesColliding) return
       
-      if(entitiesColliding) {entity.onEntityCollide(checkEntity)}
+      if(checkEntity instanceof Projectile && !entity.canHitProjectiles) {return} 
+      if(checkEntity instanceof Projectile && checkEntity.owner === entity && !entity.canHitOwnedProjectiles) return
+
+      entity.onEntityCollide(checkEntity)
+      
     })
   }
 }

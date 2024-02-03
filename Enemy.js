@@ -1,6 +1,7 @@
 import { Entity } from "./WebGameEngine/Types/Entity.js"
 import { Projectile } from "./WebGameEngine/Types/Projectile.js"
 import { ValuePair } from "./WebGameEngine/Types/ValuePair.js"
+import { TestProjectile } from "./TestProj.js"
 
 export class Enemy extends Entity {
     constructor(position, texture) {
@@ -9,19 +10,22 @@ export class Enemy extends Entity {
         this.width = 50
         this.height = 50
         this.fillColor = 'red'
-        this.velocity.y = 0.5
+        
         this.forceTextureFit = true
-        //this.rotationSpeed = 0.1
+        this.canHitProjectiles = false
+        this.canHitOwnedProjectiles = false
     }
 
     ai() {
         if(this.drawTick === 0) {
-            new Projectile(this, this.position, null, 5,5, this.velocity, 10000).fillColor = 'pink'
-            
+            let p = new TestProjectile(this, new ValuePair(this.position.x, this.position.y + 200), null, 5,5, new ValuePair(0,-3), 10000)
+            p.fillColor = 'pink'
         }
     }
 
     onEntityCollide(entity) {
-        //entity.kill()
+        //if(entity instanceof Projectile && entity.owner !== this)
+        console.log(entity)
+        entity.kill()
     }
 }

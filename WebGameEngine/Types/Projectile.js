@@ -7,7 +7,7 @@ export class Projectile extends Entity {
 
         if(!(owner instanceof Entity) && owner != null) {throw new Error("Type Error. 'owner' must be of type 'Entity' or null.")}
         this._owner = owner
-        this.velocity = owner.velocity
+        this.velocity = velocity
         this.lifetime = lifetime
     }
 
@@ -31,6 +31,13 @@ export class Projectile extends Entity {
         this._canHitOwner = value
     } get canHitOwner() {return this._canHitOwner}
 
+    // If true, then this Projectile will call its 'onEntityCollide' function if it collides with a Projectile. 
+    _canHitOtherProjectile = false
+    set canHitOtherProjectile(value) {
+        if(typeof value !== 'boolean') {throw new Error("Type Error. 'canHitOtherProjectile' must be a boolean.")}
+        this._canHitOtherProjectile = value
+    } get canHitOtherProjectile() {return this._canHitOtherProjectile}
+
 
 
     // The number of ticks that this Projectile will exist for before it is killed. 
@@ -47,7 +54,13 @@ export class Projectile extends Entity {
     set penetration(value) {
         if (typeof value !== 'number') throw new Error("Type Error. 'penetration' must be a number.")
         this._penetration = value
-    } get penetration() {return this._penetration}
+    } get penetration() { return this._penetration }
+
+    _infinitePenetration = false
+    set infinitePenetration(value) {
+        if (typeof value !== 'boolean') throw new Error("Type Error. 'infinitePenetration' must be a boolean.")
+        this._infinitePenetration = value
+    } get infinitePenetration() {return this._infinitePenetration}
  
     _draw() {
         if(this.lifetime <= 0) this.kill()
@@ -57,11 +70,14 @@ export class Projectile extends Entity {
 
     onEntityCollide(entity) {
         if(!this.canHitOwner && entity === this.owner) return
+        if(!this.canHitOtherProjectile && entity instanceof Projectile) return
 
         this.onHitEntity(entity)
         this.penetration--
         if(this.penetration < 0 && !this.infinitePenetration) this.kill()
     }
 
+    // Defines custom behaviors for extensions of the Projectile class when a Projectile
+    // collides with another Entity. 
     onHitEntity(entity) {}
 }

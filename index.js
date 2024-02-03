@@ -5,6 +5,8 @@ import { AnimatedTexture } from "./WebGameEngine/Types/AnimatedTexture.js"
 import { counter } from "./WebGameEngine/engine.js"
 import { Player } from "./Player.js"
 import { Enemy } from "./Enemy.js"
+import { Projectile } from "./WebGameEngine/Types/Projectile.js"
+import { TestProjectile } from "./TestProj.js"
 
 
 
@@ -19,6 +21,10 @@ j.currentAnimationFrame = 1
 j.animationDelay = 20
 
 let p = new Player(new ValuePair(300, 300), texture)
+
+let testProjectile  = new TestProjectile(null, new ValuePair(100, 0), null, 50, 50, new ValuePair(1,0), 10000)
+testProjectile.fillColor = "green"
+testProjectile.infinitePenetration = true
 
 
 

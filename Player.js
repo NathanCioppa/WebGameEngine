@@ -13,11 +13,9 @@ export class Player extends Entity {
 
 
 
-    hasStopped = false
+    
     ai() {
         
-        
-
     }
 
     onKill() {
